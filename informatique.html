@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50 exercices - GENIE EN INFORMATIQUE</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #eef3f9;
+    margin: 0;
+    color: #222;
+}
+
+header {
+    background: #123c69;
+    color: white;
+    text-align: center;
+    padding: 25px 12px;
+}
+
+header h1 { margin: 0; }
+
+main {
+    max-width: 750px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.carte {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #ccd4df;
+}
+
+.progression {
+    background: #ddd;
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+
+#barre {
+    background: #1769aa;
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+}
+
+.option {
+    display: block;
+    padding: 14px;
+    margin: 10px 0;
+    border: 1px solid #ccd4df;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.option:hover { background: #edf5ff; }
+
+.option input { margin-right: 10px; }
+
+button {
+    background: #123c69;
+    color: white;
+    padding: 13px 20px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 15px;
+}
+
+button:hover { background: #1769aa; }
+
+button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+#correction {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    display: none;
+    line-height: 1.6;
+}
+
+.bonne { background: #e1f5e8; color: #155b2b; }
+.mauvaise { background: #ffe8e8; color: #8a2020; }
+
+footer {
+    text-align: center;
+    padding: 20px;
+}
+
+a { color: #1769aa; }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>GENIE EN INFORMATIQUE</h1>
+    <p>Apprendre - S'exercer - Progresser</p>
+    <p>50 exercices de HTML5</p>
+</header>
+
+<main>
+<div class="carte">
+
+    <h2>Exercices : HTML5</h2>
+    <p>Réponds aux 50 questions et lis les explications pour apprendre.</p>
+
+    <p id="numero">Question 1 sur 50</p>
+
+    <div class="progression">
+        <div id="barre"></div>
+    </div>
+
+    <h3 id="question"></h3>
+
+    <div id="choix"></div>
+
+    <button id="verifier" onclick="verifierReponse()">
+        Vérifier ma réponse
+    </button>
+
+    <div id="correction"></div>
+
+    <button id="suivant" onclick="questionSuivante()" style="display:none">
+        Question suivante
+    </button>
+
+    <div id="fin" style="display:none">
+        <h2>Résultat final</h2>
+        <h1 id="score"></h1>
+        <p id="appreciation"></p>
+        <button onclick="recommencer()">Recommencer les exercices</button>
+    </div>
+
+</div>
+
+<p style="text-align:center">
+    <a href="index.html">← Retour à l'accueil</a>
+</p>
+</main>
+
+<footer>
+    © 2026 GENIE EN INFORMATIQUE
+</footer>
+
+<script>
+
+const exercices = [
+
+{
+q:"Que signifie HTML ?",
+o:["HyperText Machine Language","HyperText Markup Language","High Technology Management Link","Home Tool Markup Language"],
+r:1,
+e:"HTML signifie HyperText Markup Language. C'est un langage de balisage qui permet de structurer le contenu d'une page web : titres, paragraphes, images, liens et autres éléments."
+},
+
+{
+q:"Quel est le rôle principal du HTML ?",
+o:["Créer la structure d'une page web","Protéger l'ordinateur contre les virus","Remplacer le système Windows","Créer uniquement des calculs"],
+r:0,
+e:"HTML organise le contenu d'une page web. Il indique au navigateur où se trouvent les titres, les paragraphes, les images et les liens."
+},
+
+{
+q:"Quelle extension utilise un fichier HTML ?",
+o:[".jpg",".mp3",".html",".exe"],
+r:2,
+e:"L'extension .html indique qu'il s'agit d'un document HTML. Par exemple : index.html."
+},
+
+{
+q:"Quel logiciel permet d'écrire du code HTML ?",
+o:["Visual Studio Code","Calculatrice","Lecteur audio","Paint uniquement"],
+r:0,
+e:"Visual Studio Code est un éditeur de code. Il permet d'écrire, modifier et organiser les fichiers HTML, CSS et JavaScript."
+},
+
+{
+q:"Quel logiciel permet d'afficher une page web ?",
+o:["Un navigateur web","Un clavier","Une imprimante","Un antivirus uniquement"],
+r:0,
+e:"Un navigateur comme Chrome, Firefox ou Edge lit le code HTML et affiche la page web à l'écran."
+},
+
+{
+q:"Que signifie HTML5 ?",
+o:["La cinquième version majeure de HTML","Un logiciel antivirus","Un système d'exploitation","Un type de clavier"],
+r:0,
+e:"HTML5 désigne une version majeure du langage HTML. Elle apporte notamment de nouveaux éléments pour structurer les pages et intégrer des médias."
+},
+
+{
+q:"Quelle déclaration indique au navigateur que le document utilise HTML5 ?",
+o:["<html5>","<DOCTYPE>","<!DOCTYPE html>","<version5>"],
+r:2,
+e:"<!DOCTYPE html> se place au début du document. Cette déclaration indique au navigateur d'interpréter la page en mode standard HTML5."
+},
+
+{
+q:"Quelle balise contient tout le document HTML ?",
+o:["<body>","<html>","<head>","<footer>"],
+r:1,
+e:"La balise <html> est l'élément racine. Elle contient les deux grandes parties du document : <head> et <body>."
+},
+
+{
+q:"Quelle partie contient les informations générales de la page ?",
+o:["<head>","<body>","<p>","<h1>"],
+r:0,
+e:"La balise <head> contient les informations de la page, comme son titre, son encodage et les liens vers les fichiers CSS."
+},
+
+{
+q:"Dans quelle partie place-t-on le contenu visible de la page ?",
+o:["<head>","<body>","<title>","<meta>"],
+r:1,
+e:"La balise <body> contient les éléments affichés dans la page : textes, images, titres, tableaux et formulaires."
+},
+
+{
+q:"Quelle balise définit le titre affiché dans l'onglet du navigateur ?",
+o:["<h1>","<p>","<title>","<strong>"],
+r:2,
+e:"La balise <title> définit le titre du document dans l'onglet du navigateur. Elle se place dans la partie <head>."
+},
+
+{
+q:"Quel attribut de html indique que la page est en français ?",
+o:["lang","color","size","name"],
+r:0,
+e:"L'attribut lang précise la langue du document. Par exemple, <html lang=\"fr\"> indique que la langue principale est le français."
+},
+
+{
+q:"À quoi sert meta charset=\"UTF-8\" ?",
+o:["À afficher correctement les caractères","À créer une image","À changer la couleur du fond","À ajouter un tableau"],
+r:0,
+e:"UTF-8 est un encodage de caractères. Il permet notamment d'afficher correctement les accents français comme é, è, à et ç."
+},
+
+{
+q:"Quelle balise permet de créer le plus grand titre HTML par défaut ?",
+o:["<h6>","<h3>","<h1>","<p>"],
+r:2,
+e:"<h1> représente le titre de premier niveau. Les titres HTML vont de <h1> à <h6>, du niveau le plus important au moins important."
+},
+
+{
+q:"Combien de niveaux de titres HTML classiques existe-t-il ?",
+o:["2","4","6","10"],
+r:2,
+e:"Il existe six niveaux de titres : h1, h2, h3, h4, h5 et h6. Ils servent à organiser les différentes parties d'un document."
+},
+
+{
+q:"Quelle balise sert à créer un paragraphe ?",
+o:["<img>","<p>","<br>","<h1>"],
+r:1,
+e:"La balise <p> représente un paragraphe. Elle permet de regrouper un ensemble de phrases dans un bloc de texte."
+},
+
+{
+q:"Quelle balise permet de passer à la ligne ?",
+o:["<br>","<title>","<head>","<img>"],
+r:0,
+e:"<br> provoque un saut de ligne à l'intérieur d'un texte. C'est une balise orpheline, qui ne nécessite pas de balise fermante."
+},
+
+{
+q:"Quelle balise crée une ligne horizontale de séparation ?",
+o:["<hr>","<line>","<br>","<strong>"],
+r:0,
+e:"La balise <hr> représente une séparation thématique, souvent affichée sous forme de ligne horizontale."
+},
+
+{
+q:"Quelle balise indique qu'un texte est important ?",
+o:["<strong>","<small>","<br>","<img>"],
+r:0,
+e:"<strong> indique une importance particulière pour le texte. Les navigateurs l'affichent généralement en gras."
+},
+
+{
+q:"Quelle balise sert à mettre un texte en italique avec une emphase ?",
+o:["<em>","<hr>","<ul>","<h1>"],
+r:0,
+e:"<em> marque une emphase dans le texte. Le navigateur l'affiche généralement en italique."
+},
+
+{
+q:"Quelle balise permet de souligner un texte ?",
+o:["<u>","<p>","<br>","<ol>"],
+r:0,
+e:"La balise <u> représente un texte avec une annotation non textuelle, souvent affichée avec un soulignement."
+},
+
+{
+q:"Quelle balise représente un texte supprimé ou barré ?",
+o:["<s>","<h2>","<img>","<head>"],
+r:0,
+e:"La balise <s> représente un contenu qui n'est plus exact ou pertinent. Les navigateurs l'affichent généralement barré."
+},
+
+{
+q:"Quelle balise permet d'afficher un exposant ?",
+o:["<sub>","<sup>","<p>","<div>"],
+r:1,
+e:"<sup> affiche un texte en exposant, c'est-à-dire légèrement au-dessus de la ligne normale. Exemple : x<sup>2</sup> affiche x²."
+},
+
+{
+q:"Quelle balise permet d'afficher un indice ?",
+o:["<sup>","<sub>","<strong>","<hr>"],
+r:1,
+e:"<sub> affiche un texte en indice, légèrement en dessous de la ligne normale. Exemple : H<sub>2</sub>O représente la formule de l'eau."
+},
+
+{
+q:"Quelle balise permet de regrouper plusieurs éléments dans un bloc ?",
+o:["<div>","<br>","<title>","<meta>"],
+r:0,
+e:"<div> est un conteneur générique de type bloc. Il permet de regrouper des éléments pour les organiser ou leur appliquer du CSS."
+},
+
+{
+q:"Quelle balise permet de regrouper une petite partie de texte en ligne ?",
+o:["<span>","<div>","<body>","<hr>"],
+r:0,
+e:"<span> est un conteneur générique en ligne. Il permet notamment de cibler une partie d'une phrase avec du CSS."
+},
+
+{
+q:"Quelle balise permet de conserver les espaces et retours à la ligne du texte écrit ?",
+o:["<pre>","<p>","<h1>","<br>"],
+r:0,
+e:"<pre> affiche un texte préformaté. Les espaces et les retours à la ligne présents dans le code sont conservés dans l'affichage."
+},
+
+{
+q:"Quelle balise permet de créer une liste non ordonnée ?",
+o:["<ol>","<ul>","<li>","<table>"],
+r:1,
+e:"<ul> crée une liste non ordonnée, généralement affichée avec des puces. Chaque élément de la liste est placé dans une balise <li>."
+},
+
+{
+q:"Quelle balise permet de créer une liste numérotée ?",
+o:["<ul>","<ol>","<span>","<div>"],
+r:1,
+e:"<ol> crée une liste ordonnée. Les éléments sont généralement numérotés automatiquement par le navigateur."
+},
+
+{
+q:"Quelle balise représente un élément d'une liste ?",
+o:["<li>","<td>","<th>","<p>"],
+r:0,
+e:"<li> signifie list item. Elle représente un élément à l'intérieur d'une liste <ul> ou <ol>."
+},
+
+{
+q:"Quelle balise permet de créer un lien hypertexte ?",
+o:["<a>","<img>","<p>","<hr>"],
+r:0,
+e:"La balise <a> crée un lien hypertexte. Elle permet de naviguer vers une autre page ou une autre adresse."
+},
+
+{
+q:"Quel attribut indique la destination d'un lien ?",
+o:["src","href","alt","class"],
+r:1,
+e:"L'attribut href indique l'adresse de destination d'un lien. Exemple : <a href=\"index.html\">Accueil</a>."
+},
+
+{
+q:"Quelle balise permet d'insérer une image ?",
+o:["<picture> uniquement","<img>","<imagefile>","<photo>"],
+r:1,
+e:"La balise <img> permet d'intégrer une image dans une page web. Elle utilise notamment l'attribut src pour indiquer son emplacement."
+},
+
+{
+q:"Quel attribut indique le chemin d'une image ?",
+o:["href","src","lang","id"],
+r:1,
+e:"L'attribut src indique la source de l'image. Exemple : <img src=\"photo.jpg\" alt=\"Une photo\">."
+},
+
+{
+q:"À quoi sert l'attribut alt d'une image ?",
+o:["À décrire l'image sous forme de texte alternatif","À supprimer l'image","À changer le titre de la page","À créer un lien"],
+r:0,
+e:"alt fournit une description textuelle de l'image. Cette description aide notamment les personnes utilisant un lecteur d'écran et peut s'afficher si l'image ne se charge pas."
+},
+
+{
+q:"Une balise orpheline est une balise qui :",
+o:["N'a pas besoin d'une balise fermante","Est toujours en rouge","Ne fonctionne pas","Contient obligatoirement une image"],
+r:0,
+e:"Une balise orpheline n'entoure pas de contenu et ne possède pas de balise fermante classique. Exemples : <br>, <hr> et <img>."
+},
+
+{
+q:"Quelle écriture représente correctement une balise fermante ?",
+o:["<p>","</p>","<p/>","<p end>"],
+r:1,
+e:"Une balise fermante commence par le caractère /. Exemple : <p>Bonjour</p>. La première balise ouvre le paragraphe et la seconde le ferme."
+},
+
+{
+q:"Dans <p class=\"texte\">Bonjour</p>, quel est l'attribut ?",
+o:["Bonjour","p","class","texte"],
+r:2,
+e:"class est l'attribut. Il donne une classe à l'élément pour pouvoir le cibler avec CSS ou JavaScript. La valeur de cet attribut est texte."
+},
+
+{
+q:"Dans <a href=\"index.html\">Accueil</a>, quelle est la valeur de href ?",
+o:["Accueil","index.html","a","html"],
+r:1,
+e:"La valeur de l'attribut href est index.html. Elle indique la page qui sera ouverte lorsque l'utilisateur cliquera sur le lien."
+},
+
+{
+q:"Quelle écriture permet de mettre le chiffre 2 en indice ?",
+o:["H<sup>2</sup>","H<sub>2</sub>","H<strong>2</strong>","H<br>2"],
+r:1,
+e:"La balise <sub> place le chiffre 2 en indice. Elle est notamment utilisée pour écrire certaines formules chimiques."
+},
+
+{
+q:"Quelle écriture affiche x² ?",
+o:["x<sub>2</sub>","x<sup>2</sup>","x<br>2","x<div>2</div>"],
+r:1,
+e:"La balise <sup> place le chiffre 2 en exposant. C'est utile pour écrire des puissances et certaines notations mathématiques."
+},
+
+{
+q:"Quelle balise représente le pied de page d'un document ou d'une section ?",
+o:["<footer>","<header>","<head>","<title>"],
+r:0,
+e:"<footer> représente le pied de page d'une page ou d'une section. Il peut contenir des informations de contact, des liens ou des mentions."
+},
+
+{
+q:"Quelle balise représente généralement l'en-tête d'une page ou d'une section ?",
+o:["<header>","<footer>","<sub>","<pre>"],
+r:0,
+e:"<header> représente une zone d'introduction ou d'en-tête. Elle peut contenir un titre, un logo ou une navigation."
+},
+
+{
+q:"Quelle balise représente la zone de navigation d'un site ?",
+o:["<nav>","<sup>","<hr>","<s>"],
+r:0,
+e:"<nav> représente une zone contenant des liens de navigation, par exemple un menu permettant d'accéder aux différentes pages."
+},
+
+{
+q:"Quelle balise représente le contenu principal d'une page ?",
+o:["<main>","<title>","<meta>","<br>"],
+r:0,
+e:"<main> représente le contenu principal du document. Il permet de distinguer le contenu central des menus, en-têtes et pieds de page."
+},
+
+{
+q:"Quelle balise représente une section thématique d'une page ?",
+o:["<section>","<img>","<br>","<sup>"],
+r:0,
+e:"<section> regroupe un contenu qui forme une partie thématique d'un document. Elle contient généralement un titre."
+},
+
+{
+q:"Quelle balise permet d'ajouter une feuille de style CSS externe ?",
+o:["<link>","<style> uniquement","<img>","<strong>"],
+r:0,
+e:"La balise <link> permet notamment de relier un fichier CSS externe au document HTML. Exemple : <link rel=\"stylesheet\" href=\"style.css\">."
+},
+
+{
+q:"Dans quelle balise peut-on écrire du CSS directement dans le document HTML ?",
+o:["<style>","<script>","<footer>","<title>"],
+r:0,
+e:"La balise <style>, généralement placée dans <head>, permet d'écrire des règles CSS directement dans le document HTML."
+},
+
+{
+q:"Quelle balise permet d'écrire du JavaScript dans une page HTML ?",
+o:["<script>","<style>","<meta>","<section>"],
+r:0,
+e:"La balise <script> permet d'intégrer du JavaScript ou de charger un fichier JavaScript externe. JavaScript sert notamment à rendre une page interactive."
+},
+
+{
+q:"À quoi sert la balise meta viewport ?",
+o:["À adapter la largeur de la page à l'écran de l'appareil","À créer une vidéo","À changer la langue","À ajouter un tableau"],
+r:0,
+e:"La déclaration viewport aide le navigateur mobile à utiliser la largeur réelle de l'écran. C'est une base importante pour créer un site responsive."
+},
+
+{
+q:"Quel est le rôle principal du CSS ?",
+o:["Mettre en forme les pages web","Remplacer le HTML","Créer uniquement des bases de données","Démarrer l'ordinateur"],
+r:0,
+e:"CSS signifie Cascading Style Sheets. Il permet de définir l'apparence d'une page : couleurs, polices, marges, espacements, disposition et adaptation aux écrans."
+}
+
+];
+
+let index = 0;
+let points = 0;
+let dejaRepondu = false;
+
+function afficherQuestion() {
+    dejaRepondu = false;
+
+    const ex = exercices[index];
+
+    document.getElementById("numero").textContent =
+        "Question " + (index + 1) + " sur " + exercices.length;
+
+    document.getElementById("barre").style.width =
+        ((index + 1) / exercices.length * 100) + "%";
+
+    document.getElementById("question").textContent = ex.q;
+
+    let contenu = "";
+
+    ex.o.forEach((option, i) => {
+        contenu += `
+        <label class="option">
+            <input type="radio" name="reponse" value="${i}">
+            ${String.fromCharCode(65 + i)}. ${option}
+        </label>`;
+    });
+
+    document.getElementById("choix").innerHTML = contenu;
+    document.getElementById("correction").style.display = "none";
+    document.getElementById("suivant").style.display = "none";
+    document.getElementById("verifier").style.display = "inline-block";
+}
+
+function verifierReponse() {
+    if (dejaRepondu) return;
+
+    const selection = document.querySelector(
+        'input[name="reponse"]:checked'
+    );
+
+    if (!selection) {
+        alert("Choisis une réponse avant de continuer !");
+        return;
+    }
+
+    dejaRepondu = true;
+
+    const ex = exercices[index];
+    const bonne = Number(selection.value) === ex.r;
+
+    if (bonne) points++;
+
+    const correction = document.getElementById("correction");
+
+    correction.className = bonne ? "bonne" : "mauvaise";
+
+    correction.innerHTML =
+        "<strong>" +
+        (bonne ? "Bravo ! Bonne réponse." : "Ce n'est pas la bonne réponse.") +
+        "</strong><br><br>" +
+        "<strong>Réponse correcte : </strong>" +
+        String.fromCharCode(65 + ex.r) + ". " + ex.o[ex.r] +
+        "<br><br><strong>Explication :</strong> " + ex.e;
+
+    correction.style.display = "block";
+
+    document.getElementById("verifier").style.display = "none";
+    document.getElementById("suivant").style.display = "inline-block";
+
+    document.querySelectorAll('input[name="reponse"]').forEach(input => {
+        input.disabled = true;
+    });
+
+    document.getElementById("suivant").textContent =
+        index === exercices.length - 1
+        ? "Voir mon résultat"
+        : "Question suivante";
+}
+
+function questionSuivante() {
+    if (index < exercices.length - 1) {
+        index++;
+        afficherQuestion();
+    } else {
+        terminer();
+    }
+}
+
+function terminer() {
+    document.getElementById("question").style.display = "none";
+    document.getElementById("choix").style.display = "none";
+    document.getElementById("correction").style.display = "none";
+    document.getElementById("numero").style.display = "none";
+    document.querySelector(".progression").style.display = "none";
+    document.getElementById("verifier").style.display = "none";
+    document.getElementById("suivant").style.display = "none";
+
+    document.getElementById("fin").style.display = "block";
+
+    document.getElementById("score").textContent =
+        points + " / " + exercices.length;
+
+    let message = "";
+
+    if (points >= 45) {
+        message = "Excellent travail ! Tu maîtrises très bien les notions.";
+    } else if (points >= 35) {
+        message = "Très bien ! Continue tes efforts.";
+    } else if (points >= 25) {
+        message = "Bon début. Relis les explications et continue.";
+    } else {
+        message = "Continue à apprendre. Tu peux recommencer les exercices.";
+    }
+
+    document.getElementById("appreciation").textContent = message;
+}
+
+function recommencer() {
+    index = 0;
+    points = 0;
+
+    document.getElementById("question").style.display = "block";
+    document.getElementById("choix").style.display = "block";
+    document.getElementById("numero").style.display = "block";
+    document.querySelector(".progression").style.display = "block";
+    document.getElementById("fin").style.display = "none";
+
+    afficherQuestion();
+}
+
+afficherQuestion();
+
+</script>
+
+</body>
+</html>
